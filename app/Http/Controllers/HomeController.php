@@ -13,7 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
     }
 
     /**
@@ -28,5 +28,37 @@ class HomeController extends Controller
 
     public function ListbyGenre(){
         return view('List-by-Genre');
+    }
+
+    public function bookDetails(){
+        return view('book-details');
+    }
+    
+    public function search(){
+        return view('search');
+    }
+    
+    public function myRentals(){
+        return view('my-rentals');
+    }
+    
+    public function rentalDetails(){
+        return view('rental-details');
+    }
+    
+    public function addBook(){
+        return view('add-book');
+    }
+
+    public function genreList(){
+        return view('genre-list');
+    }
+    
+    public function addGenre(){
+        return view('add-genre');
+    }
+
+    public function editGenre(){
+        return view('edit-genre');
     }
 }
