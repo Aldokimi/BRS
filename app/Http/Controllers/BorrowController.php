@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBorrowRequest;
 use App\Http\Requests\UpdateBorrowRequest;
+use App\Models\Book;
 use App\Models\Borrow;
+use Illuminate\Support\Facades\Auth;
 
 class BorrowController extends Controller
 {
@@ -15,7 +17,16 @@ class BorrowController extends Controller
      */
     public function index()
     {
-        //
+        if($this->authorize('accessForReader')){
+            return view('rental.my-rentals',[
+                'rentals' => Borrow::all(),
+            ]);
+        }else{
+            $this->authorize('accessForLibraran');
+            return view('rental.rentals-list',[
+                'rentals' => Borrow::all(),
+            ]);
+        }
     }
 
     /**
@@ -34,9 +45,14 @@ class BorrowController extends Controller
      * @param  \App\Http\Requests\StoreBorrowRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreBorrowRequest $request)
+    public function store(StoreBorrowRequest $request, Book $book)
     {
-        //
+        $this->authorize('accessForReader');
+        Borrow::create();
+        return redirect()->route('book.book-details', [
+            'book' => $book,
+            'user' => Auth::user(),
+        ]);
     }
 
     /**
@@ -47,7 +63,10 @@ class BorrowController extends Controller
      */
     public function show(Borrow $borrow)
     {
-        //
+        $this->authorize('accessForReader');
+        return redirect()->route('rental.rental-details', [
+            'rental' => $borrow,
+        ]);
     }
 
     /**
@@ -58,7 +77,10 @@ class BorrowController extends Controller
      */
     public function edit(Borrow $borrow)
     {
-        //
+        $this->authorize('accessForLibraran');
+        return view('rental.edit-book', [
+            'rental' => $borrow,
+        ]);
     }
 
     /**
@@ -70,7 +92,12 @@ class BorrowController extends Controller
      */
     public function update(UpdateBorrowRequest $request, Borrow $borrow)
     {
-        //
+        $this->authorize('accessForLibraran');
+        $validated_data = $request->validated();
+        $borrow->update($validated_data);
+        return redirect()->route('borrow.rentals-list', [
+            'borrow' => $borrow,
+        ]);
     }
 
     /**

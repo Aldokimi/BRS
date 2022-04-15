@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -15,7 +16,10 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        $books = Book::all();
+        return view('genre.List-by-Genre',[
+            'books' => $books
+        ]);
     }
 
     /**
@@ -25,7 +29,8 @@ class BookController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('accessForLibraran');
+        return view('book.add-book');
     }
 
     /**
@@ -36,7 +41,10 @@ class BookController extends Controller
      */
     public function store(StoreBookRequest $request)
     {
-        //
+        $this->authorize('accessForLibraran');
+        $validated_data = $request->validated();
+        Book::create($validated_data);
+        return redirect()->route('genre.List-by-Genre');
     }
 
     /**
@@ -45,9 +53,12 @@ class BookController extends Controller
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function show(Book $book)
+    public function show()
     {
-        //
+        $user = Auth::user();
+        return view('book.book-details', [
+            'user' => $user,
+        ]);
     }
 
     /**
@@ -58,7 +69,10 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        $this->authorize('accessForLibraran');
+        return view('book.edit-book', [
+            'book' => $book,
+        ]);
     }
 
     /**
@@ -70,7 +84,12 @@ class BookController extends Controller
      */
     public function update(UpdateBookRequest $request, Book $book)
     {
-        //
+        $this->authorize('accessForLibraran');
+        $validated_data = $request->validated();
+        $book->update($validated_data);
+        return redirect()->route('book.book-details', [
+            'book' => $book,
+        ]);
     }
 
     /**
@@ -81,6 +100,8 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        $this->authorize('accessForLibraran');
+        $book->delete();
+        return redirect()->route('book.book-details');
     }
 }

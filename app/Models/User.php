@@ -43,7 +43,7 @@ class User extends Authenticatable
     ];
 
     public function readerBorrows() {
-        return $this->hasMany(Borrow::class, 'reader_id');
+        return $this->hasMany(Borrow::class);
     }
 
     public function managedRequests() {

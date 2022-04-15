@@ -10,6 +10,14 @@ class GenrePolicy
 {
     use HandlesAuthorization;
 
+    public function accessForLibraran(User $user){
+        return $user->is_librarian == 1;
+    }
+    public function accessForReader(User $user){
+        return $user->is_librarian == 0;
+    }
+
+
     /**
      * Determine whether the user can view any models.
      *

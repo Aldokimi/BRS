@@ -29,15 +29,14 @@ class DatabaseSeeder extends Seeder
             $book->save();
         }); 
 
-        $users = User::all();
         $borrows = Borrow::all();
 
-        $borrows->each(function ($borrow) use ($books, $users){
+        $borrows->each(function ($borrow) use ($books){
             $book = $books->random();
             $borrow->book()->associate($book);
             $borrow->save();
         });
-
+        //dd($users->find(5)->managedRequests);
 
     }
 }

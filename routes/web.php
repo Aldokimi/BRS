@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\GenreController;
+use App\Http\Controllers\LogoutController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -14,23 +17,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
+Route::middleware(['auth'])->group(function() {
+    Route::resource('borrow', BorrowController::class);
+    Route::resource('book', BookController::class);
+    Route::resource('genre', GenreController::class);
+    // Route::get('/logout', 'LogoutController@perform')->name('logout.perform');
+    Route::post('logout', [LogoutController::class, 'logout'])->name('logout');
 });
+
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/List-by-Genre', [App\Http\Controllers\HomeController::class, 'ListbyGenre'])->name('ListbyGenre');
-Route::get('/book-details', [App\Http\Controllers\HomeController::class, 'bookDetails'])->name('bookDetails');
-Route::get('/search', [App\Http\Controllers\HomeController::class, 'search'])->name('search');
-Route::get('/my-rentals', [App\Http\Controllers\HomeController::class, 'myRentals'])->name('myRentals');
-Route::get('/rental-details', [App\Http\Controllers\HomeController::class, 'rentalDetails'])->name('rentalDetails');
-Route::get('/add-book', [App\Http\Controllers\HomeController::class, 'addBook'])->name('addBook');
-Route::get('/genre-list', [App\Http\Controllers\HomeController::class, 'genreList'])->name('genreList');
-Route::get('/add-genre', [App\Http\Controllers\HomeController::class, 'addGenre'])->name('addGenre');
-Route::get('/edit-genre', [App\Http\Controllers\HomeController::class, 'editGenre'])->name('editGenre');
-
-Route::get('/auth/login', function () {
-    return view('home');
-});
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

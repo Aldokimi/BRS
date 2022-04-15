@@ -26,7 +26,7 @@
     
 </head>
 
-<body id="page-top">
+<body id="page-top" class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
           <a class="navbar-brand" href='{{ route('home') }}'>DOKIBRS</a>
@@ -36,18 +36,23 @@
       
           <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav me-auto">
-              <li class="nav-item">
-                <a class="nav-link" href="#">List Pages</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">My Rentals</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Add New Book</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">List Genres</a>
-              </li>
+              @auth
+                  @if (!Auth::user()->is_librarian)
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">My Rentals</a>
+                    </li>
+                  @else
+                    <li class="nav-item">
+                      <a class="nav-link" href="/book/add-book">Add New Book</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">List Genres</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="/rental/rentals-list">List Rentals</a>
+                    </li>
+                  @endif
+              @endauth
             </ul>
             <form class="d-flex">
               <input class="form-control me-sm-2" type="text" placeholder="Search for a book ...">
@@ -57,10 +62,14 @@
                       
                   @if (Route::has('login'))
                   @auth
+                    <form method="POST" action="{{ route('logout') }}">
+                      @csrf
+                      <button type="submit"  class="btn btn-primary my-2 my-sm-0">logout</button>
+                    </form>
                   @else
                       <button type="button"  class="btn btn-primary my-2 my-sm-0" onclick="window.location='{{ route('login') }}'">login</button>
                     @if (Route::has('register'))
-                          <button type="button"  class="btn btn-primary my-2 my-sm-0" onclick="window.location='{{ route('register') }}'">register</button>
+                      <button type="button"  class="btn btn-primary my-2 my-sm-0" onclick="window.location='{{ route('register') }}'">register</button>
                     @endif
                   @endauth
                 @endif

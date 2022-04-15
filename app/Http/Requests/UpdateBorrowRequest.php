@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateBorrowRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class UpdateBorrowRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,14 @@ class UpdateBorrowRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'user_id' => 'exists:App\Models\User,id',
+            'book_id' => 'exists:App\Models\Book,id',
+            'status' => Rule::in(['PENDING', 'ACCEPTED', 'REJECTED', 'RETURNED']), 
+            'request_processed_at' => 'date|nullable',
+            'request_managed_by'  => 'exists:App\Models\User,id',
+            'deadline' => 'date|nullable',
+            'returned_at' => 'date|nullable',
+            'return_managed_by'  => 'exists:App\Models\User,id',
         ];
     }
 }

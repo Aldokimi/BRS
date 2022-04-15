@@ -2,7 +2,6 @@
 
 @section('content')
 <div class="container">
-
       <h3 class="fs-1 position-relative"> <p class="position-absolute top start-50 translate-middle">Book Details</p> </h3>
       <div class="m-4 p-3" style="width: 20px; height: 20px"></div>
       <div class="container">

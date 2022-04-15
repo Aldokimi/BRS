@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreGenreRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class StoreGenreRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +25,8 @@ class StoreGenreRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'title' => Rule::in(['novel', 'historical', 'humor', 'horror', 'journal', 'mystery', 'math', 'romance', 'memoir']),
+            'style' => Rule::in(['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark']),
         ];
     }
 }

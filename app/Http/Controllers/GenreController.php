@@ -15,7 +15,10 @@ class GenreController extends Controller
      */
     public function index()
     {
-        //
+        $this->authorize('accessForLibraran');
+        return view('genre-list', [
+            'genres' => Genre::all(),
+        ]);
     }
 
     /**
@@ -25,7 +28,8 @@ class GenreController extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('accessForLibraran');
+        return view('genre.add-genre');
     }
 
     /**
@@ -36,7 +40,10 @@ class GenreController extends Controller
      */
     public function store(StoreGenreRequest $request)
     {
-        //
+        $this->authorize('accessForLibraran');
+        $validated_data = $request->validated();
+        Genre::create($validated_data);
+        return redirect()->route('genre.List-by-Genre');
     }
 
     /**
@@ -58,7 +65,10 @@ class GenreController extends Controller
      */
     public function edit(Genre $genre)
     {
-        //
+        $this->authorize('accessForLibraran');
+        return view('genre.edit-genre', [
+            'genre' => $genre,
+        ]);
     }
 
     /**
@@ -70,7 +80,12 @@ class GenreController extends Controller
      */
     public function update(UpdateGenreRequest $request, Genre $genre)
     {
-        //
+        $this->authorize('accessForLibraran');
+        $validated_data = $request->validated();
+        $genre->update($validated_data);
+        return redirect()->route('genre.genre-list', [
+            'genre' =>$genre,
+        ]);
     }
 
     /**
@@ -81,6 +96,8 @@ class GenreController extends Controller
      */
     public function destroy(Genre $genre)
     {
-        //
+        $this->authorize('accessForLibraran');
+        $genre->delete();
+        return redirect()->route('genre.genre-details');
     }
 }
