@@ -18,6 +18,6 @@ class BookSeeder extends Seeder
     public function run()
     {
         DB::table('books')->truncate();
-        Book::factory()->count(100)->create();
+        Book::factory()->count(16)->create();
     }
 }

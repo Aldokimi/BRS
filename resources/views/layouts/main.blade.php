@@ -5,8 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Doki</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -36,53 +34,54 @@
       
           <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="{{ route('books.index') }}">Books</a>
+              </li>
               @auth
                   @if (!Auth::user()->is_librarian)
                     <li class="nav-item">
-                      <a class="nav-link" href="#">My Rentals</a>
+                      <a class="nav-link" href="{{ route('rentals.index') }}">My Rentals</a>
                     </li>
                   @else
                     <li class="nav-item">
-                      <a class="nav-link" href="/book/add-book">Add New Book</a>
+                      <a class="nav-link" href="{{ route('books.create') }}">Add New Book</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="#">List Genres</a>
+                      <a class="nav-link" href="{{ route('genres.index') }}">List Genres</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="/rental/rentals-list">List Rentals</a>
+
+                      <a class="nav-link" href="{{ route('rentals.index') }}">List Rentals</a>
                     </li>
                   @endif
               @endauth
             </ul>
-            <form class="d-flex">
-              <input class="form-control me-sm-2" type="text" placeholder="Search for a book ...">
-              
-                      <div class="d-grid gap-2">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
                       
-                  @if (Route::has('login'))
+                @if (Route::has('login'))
                   @auth
-                    <form method="POST" action="{{ route('logout') }}">
-                      @csrf
-                      <button type="submit"  class="btn btn-primary my-2 my-sm-0">logout</button>
-                    </form>
+                      <button type="submit"  class="btn btn-primary my-2 my-sm-0 m-2" onclick="window.location='{{ route('logout') }}'">logout</button> 
                   @else
-                      <button type="button"  class="btn btn-primary my-2 my-sm-0" onclick="window.location='{{ route('login') }}'">login</button>
+                      <button type="button"  class="btn btn-primary my-2 my-sm-0 m-2" onclick="window.location='{{ route('login') }}'">login</button>
                     @if (Route::has('register'))
-                      <button type="button"  class="btn btn-primary my-2 my-sm-0" onclick="window.location='{{ route('register') }}'">register</button>
+                      <button type="button"  class="btn btn-primary my-2 my-sm-0 m-2" onclick="window.location='{{ route('register') }}'">register</button>
                     @endif
                   @endauth
                 @endif
-              
-              
+
             </form>
           </div>
         </div>
       </nav>
       <div class="m-4 p-3" style="width: 20px; height: 20px"></div>
+
+
+
       <main>
           @yield('content')
       </main>
+
+
+
       <div class="m-4 p-3" style="width: 20px; height: 20px"></div>
       <div class="footer fixed-bottom">
         <div class="navbar navbar-expand-lg navbar-dark bg-dark">

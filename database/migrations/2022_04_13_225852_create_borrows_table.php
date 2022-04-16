@@ -25,14 +25,14 @@ return new class extends Migration
             
             $table->dateTime('request_processed_at')->nullable();
 
-            $table->unsignedBigInteger('request_managed_by');
+            $table->unsignedBigInteger('request_managed_by')->nullable();
             $table->foreign('request_managed_by')->references('id')->on('users')->onDelete('cascade');
             
             $table->dateTime('deadline')->nullable();
 
             $table->dateTime('returned_at')->nullable();
 
-            $table->unsignedBigInteger('return_managed_by');
+            $table->unsignedBigInteger('return_managed_by')->nullable();
             $table->foreign('return_managed_by')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();

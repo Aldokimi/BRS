@@ -24,14 +24,14 @@ class StoreBookRequest extends FormRequest
     public function rules()
     {
         return [
-            'title'         => 'required|size:255',
-            'author'        => 'required|size:255',
+            'title'         => 'required|max:255',
+            'author'        => 'required|max:255',
             'description'   => 'nullable',
             'released_at'   => 'date|required',
-            'cover_image'   => 'nullable|url|size:255',
+            'cover_image'   => 'nullable|url|max:255',
             'pages'         => 'integer|required',
-            'language_code' => 'size:3',
-            'isbn'          => 'regex:/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/i',
+            'language_code' => 'max:3',
+            'isbn'          => 'required|regex:/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/i',
             'in_stock'      => 'integer|required',
         ];
     }

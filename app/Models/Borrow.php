@@ -9,7 +9,7 @@ class Borrow extends Model
 {
     use HasFactory;
     
-    protected $fillable = [];
+    protected $guarded = [];
 
     public function book(){
         return $this->belongsTo(Book::class);

@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Book extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
+    protected $guarded = [];
     
     public function genres(){
         return $this->belongsToMany(Genre::class);
@@ -23,4 +24,11 @@ class Book extends Model
         return $this->getAllBorrows()->where('status', '=', 'ACCEPTED');
     }
 
+    public static function searchForBook($data)
+    {
+        return DB::table('books')
+                ->where('title', 'like', '%' . $data . '%')
+                ->orWhere('author', 'like', '%' . $data . '%')
+                ->get();
+    }
 }

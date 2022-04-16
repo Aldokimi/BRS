@@ -27,7 +27,8 @@ class GenreFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->randomElement(['novel', 'historical', 'humor', 'horror', 'journal', 'mystery', 'math', 'romance', 'memoir']),
+            // 'title' => $this->faker->unique()->randomElement($array = array('novel', 'historical', 'humor', 'horror', 'journal', 'mystery', 'math', 'romance', 'memoir')),
+            'title' => $this->faker->unique()->word(),
             'style' => $this->faker->randomElement(['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark']),
         ];
     }

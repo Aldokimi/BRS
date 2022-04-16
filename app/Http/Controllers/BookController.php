@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Genre;
 
 class BookController extends Controller
 {
@@ -17,7 +17,11 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::all();
-        return view('genre.List-by-Genre',[
+        if(request('search')){
+            $books = Book::searchForBook(request('search'));
+            // dd($books);
+        }
+        return view('book.index',[
             'books' => $books
         ]);
     }
@@ -29,8 +33,9 @@ class BookController extends Controller
      */
     public function create()
     {
-        $this->authorize('accessForLibraran');
-        return view('book.add-book');
+        return view('book.create',[
+            'genres' => Genre::all(),
+        ]);
     }
 
     /**
@@ -41,10 +46,13 @@ class BookController extends Controller
      */
     public function store(StoreBookRequest $request)
     {
-        $this->authorize('accessForLibraran');
+        dd($request);
         $validated_data = $request->validated();
-        Book::create($validated_data);
-        return redirect()->route('genre.List-by-Genre');
+        $book = Book::create($validated_data);
+        if (isset($validated_data['genres'])) {
+            $book->genres()->attach($validated_data['genres']);
+        }
+        return redirect()->route('home');
     }
 
     /**
@@ -53,11 +61,10 @@ class BookController extends Controller
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show(Book $book)
     {
-        $user = Auth::user();
-        return view('book.book-details', [
-            'user' => $user,
+        return view('book.show', [
+            'book' => $book,
         ]);
     }
 
@@ -69,9 +76,9 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        $this->authorize('accessForLibraran');
-        return view('book.edit-book', [
+        return view('book.edit', [
             'book' => $book,
+            'genres' => Genre::all(),
         ]);
     }
 
@@ -84,10 +91,11 @@ class BookController extends Controller
      */
     public function update(UpdateBookRequest $request, Book $book)
     {
-        $this->authorize('accessForLibraran');
         $validated_data = $request->validated();
         $book->update($validated_data);
-        return redirect()->route('book.book-details', [
+        $book->genres()->sync($request['genres'] ?? []);
+        // dd($book->genres);
+        return redirect()->route('books.show', [
             'book' => $book,
         ]);
     }
@@ -100,8 +108,9 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        $this->authorize('accessForLibraran');
+        // dd($book);
         $book->delete();
-        return redirect()->route('book.book-details');
+        return redirect()->route('home');
     }
+
 }

@@ -15,8 +15,7 @@ class GenreController extends Controller
      */
     public function index()
     {
-        $this->authorize('accessForLibraran');
-        return view('genre-list', [
+        return view('genre.index', [
             'genres' => Genre::all(),
         ]);
     }
@@ -28,8 +27,9 @@ class GenreController extends Controller
      */
     public function create()
     {
-        $this->authorize('accessForLibraran');
-        return view('genre.add-genre');
+        return view('genre.create', [
+            'styles'=> ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'],
+        ]);
     }
 
     /**
@@ -40,10 +40,11 @@ class GenreController extends Controller
      */
     public function store(StoreGenreRequest $request)
     {
-        $this->authorize('accessForLibraran');
+        
         $validated_data = $request->validated();
+        // dd($request);
         Genre::create($validated_data);
-        return redirect()->route('genre.List-by-Genre');
+        return redirect()->route('genres.index');
     }
 
     /**
@@ -54,7 +55,8 @@ class GenreController extends Controller
      */
     public function show(Genre $genre)
     {
-        //
+        // list by genre
+        return view('genre.show', ['genre' => $genre]);
     }
 
     /**
@@ -65,9 +67,9 @@ class GenreController extends Controller
      */
     public function edit(Genre $genre)
     {
-        $this->authorize('accessForLibraran');
-        return view('genre.edit-genre', [
+        return view('genre.edit', [
             'genre' => $genre,
+            'styles'=> ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'],
         ]);
     }
 
@@ -80,10 +82,10 @@ class GenreController extends Controller
      */
     public function update(UpdateGenreRequest $request, Genre $genre)
     {
-        $this->authorize('accessForLibraran');
         $validated_data = $request->validated();
+        // dd($genre);
         $genre->update($validated_data);
-        return redirect()->route('genre.genre-list', [
+        return redirect()->route('genres.index', [
             'genre' =>$genre,
         ]);
     }
@@ -96,8 +98,8 @@ class GenreController extends Controller
      */
     public function destroy(Genre $genre)
     {
-        $this->authorize('accessForLibraran');
+        // dd($genre);
         $genre->delete();
-        return redirect()->route('genre.genre-details');
+        return redirect()->route('genres.index');
     }
 }

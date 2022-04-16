@@ -27,14 +27,14 @@ class BookFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->title(),
+            'title' => $this->faker->realTextBetween(10,25,1),
             'author' => $this->faker->name(),
             'description' => $this->faker->text(),
             'released_at' => $this->faker->date(),
             'cover_image' => $this->faker->imageUrl(),
             'pages' => $this->faker->randomDigit(),
             'language_code' => $this->faker->languageCode(),
-            'isbn' => $this->faker->isbn10(),
+            'isbn' => $this->faker->isbn13(),
             'in_stock' => $this->faker->randomDigit(),
         ];
     }

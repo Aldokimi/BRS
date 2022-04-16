@@ -25,7 +25,7 @@ class StoreGenreRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => Rule::in(['novel', 'historical', 'humor', 'horror', 'journal', 'mystery', 'math', 'romance', 'memoir']),
+            'title' => 'required',
             'style' => Rule::in(['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark']),
         ];
     }

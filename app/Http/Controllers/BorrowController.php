@@ -6,6 +6,7 @@ use App\Http\Requests\StoreBorrowRequest;
 use App\Http\Requests\UpdateBorrowRequest;
 use App\Models\Book;
 use App\Models\Borrow;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class BorrowController extends Controller
@@ -17,16 +18,16 @@ class BorrowController extends Controller
      */
     public function index()
     {
-        if($this->authorize('accessForReader')){
-            return view('rental.my-rentals',[
-                'rentals' => Borrow::all(),
-            ]);
-        }else{
-            $this->authorize('accessForLibraran');
-            return view('rental.rentals-list',[
-                'rentals' => Borrow::all(),
+        if(!Auth::user()->is_librarian){
+            return view('rental.index',[
+                'rentals' => Borrow::all()->filter(function($borrow){
+                    return $borrow->user->id == Auth::user()->id;
+                }),
             ]);
         }
+        return view('rental.index',[
+            'rentals' => Borrow::all(),
+        ]);
     }
 
     /**
@@ -45,14 +46,16 @@ class BorrowController extends Controller
      * @param  \App\Http\Requests\StoreBorrowRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreBorrowRequest $request, Book $book)
+    public function store(StoreBorrowRequest $request)
     {
-        $this->authorize('accessForReader');
-        Borrow::create();
-        return redirect()->route('book.book-details', [
-            'book' => $book,
-            'user' => Auth::user(),
+        Borrow::create([
+            'user_id' => Auth::user()->id,
+            'book_id' => $request['book'],
+            'status' => 'PENDING',
         ]);
+        $book = Book::all()->find($request['book']);
+        // dd($book);
+        return redirect()->route('books.show', ['book' => $book, 'rented' =>true]);
     }
 
     /**
@@ -61,11 +64,12 @@ class BorrowController extends Controller
      * @param  \App\Models\Borrow  $borrow
      * @return \Illuminate\Http\Response
      */
-    public function show(Borrow $borrow)
+    public function show(Borrow  $rental)
     {
-        $this->authorize('accessForReader');
-        return redirect()->route('rental.rental-details', [
-            'rental' => $borrow,
+        return view('rental.show', [
+            'rental' => $rental,
+            'users'  => User::all(),
+            'statusList' => ['PENDING', 'ACCEPTED', 'REJECTED', 'RETURNED'],
         ]);
     }
 
@@ -77,8 +81,7 @@ class BorrowController extends Controller
      */
     public function edit(Borrow $borrow)
     {
-        $this->authorize('accessForLibraran');
-        return view('rental.edit-book', [
+        return view('rental.edit', [
             'rental' => $borrow,
         ]);
     }
@@ -90,13 +93,15 @@ class BorrowController extends Controller
      * @param  \App\Models\Borrow  $borrow
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateBorrowRequest $request, Borrow $borrow)
+    public function update(UpdateBorrowRequest $request)
     {
-        $this->authorize('accessForLibraran');
         $validated_data = $request->validated();
-        $borrow->update($validated_data);
-        return redirect()->route('borrow.rentals-list', [
-            'borrow' => $borrow,
+        // dd();
+        $rental = Borrow::all()->find($request['rental']);
+        $rental->update($validated_data);
+        // dd($rental);
+        return redirect()->route('rentals.show', [
+            'rental' => $rental,
         ]);
     }
 
@@ -108,6 +113,8 @@ class BorrowController extends Controller
      */
     public function destroy(Borrow $borrow)
     {
-        //
+        dd($borrow);
+        $borrow->delete();
+        return redirect()->route('rental.index');
     }
 }

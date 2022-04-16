@@ -5,8 +5,6 @@ namespace Database\Seeders;
 use App\Models\Book;
 use App\Models\Borrow;
 use App\Models\Genre;
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -19,6 +17,13 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
+        
+        $this->call([
+            UserSeeder::class,
+            GenreSeeder::class,
+            BookSeeder::class,
+            BorrowSeeder::class,
+        ]);
 
         $genres= Genre::all();
         $books = Book::all();
@@ -37,6 +42,7 @@ class DatabaseSeeder extends Seeder
             $borrow->save();
         });
         //dd($users->find(5)->managedRequests);
+
 
     }
 }

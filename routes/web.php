@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\GenreController;
-use App\Http\Controllers\LogoutController;
+use App\Models\Book;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -18,11 +20,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth'])->group(function() {
-    Route::resource('borrow', BorrowController::class);
-    Route::resource('book', BookController::class);
-    Route::resource('genre', GenreController::class);
-    // Route::get('/logout', 'LogoutController@perform')->name('logout.perform');
-    Route::post('logout', [LogoutController::class, 'logout'])->name('logout');
+    Route::resource('rentals', BorrowController::class);
+    Route::resource('books', BookController::class);
+    Route::resource('genres', GenreController::class);
+    Route::get('logout', function (Request $request) {
+        Auth::logout();
+ 
+        $request->session()->invalidate();
+     
+        $request->session()->regenerateToken();
+     
+        return redirect('/');
+    })->name('logout');
 });
 
 
