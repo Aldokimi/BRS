@@ -36,9 +36,57 @@
               </div>
               <div class="col-3">
                   <div class="card text-dark border-success mb-4" style="max-width: 20rem;">
+                        <div class="card-header">number of pages</div>
+                        <div class="card-body">
+                          <h4 class="card-title">{{ $book->pages }}</h4>
+                        </div>
+                  </div>
+              </div>
+              <div class="col-3">
+                  <div class="card text-dark border-success mb-4" style="max-width: 20rem;">
+                        <div class="card-header">language </div>
+                        <div class="card-body">
+                          <h4 class="card-title">{{ $book->language_code }}</h4>
+                        </div>
+                  </div>
+              </div>
+              <div class="col-3">
+                  <div class="card text-dark border-success mb-4" style="max-width: 20rem;">
+                        <div class="card-header">ISBN</div>
+                        <div class="card-body">
+                          <h4 class="card-title">{{ $book->isbn }}</h4>
+                        </div>
+                  </div>
+              </div>
+              <div class="col-3">
+                  <div class="card text-dark border-success mb-4" style="max-width: 20rem;">
+                        <div class="card-header">available in the library</div>
+                        <div class="card-body">
+                          <h4 class="card-title">{{ $book->in_stock }}</h4>
+                        </div>
+                  </div>
+              </div>
+              <div class="col-3">
+                  <div class="card text-dark border-success mb-4" style="max-width: 20rem;">
+                        <div class="card-header">avialable to borrow</div>
+                        <div class="card-body">
+                          <h4 class="card-title">{{ $unRentedBooks }}</h4>
+                        </div>
+                  </div>
+              </div>
+              <div class="col-6">
+                  <div class="card text-dark border-success mb-4" style="max-width: 20rem;">
                         <div class="card-header">Book cover image </div>
                         <div class="card-body ">
                               <img style="width: 400px; height: 200px;" class="img-thumbnail" src="{{ $book->cover_image }}" alt="some image">
+                        </div>
+                  </div>
+              </div>
+              <div class="col-6">
+                  <div class="card text-dark border-success mb-4" style="max-width: 20rem;">
+                        <div class="card-header">description</div>
+                        <div class="card-body">
+                          <h4 class="card-title">{{ $book->description }}</h4>
                         </div>
                   </div>
               </div>
@@ -65,46 +113,53 @@
       <div class="m-4 p-3" style="width: 20px; height: 20px"></div>
       
       @foreach($book->borrows as $rental)
-      @if($rental->user_id == Auth::user()->id && $rental->status != 'RETURNED')
+            @auth
+            @if($rental->user_id == Auth::user()->id && $rental->status != 'RETURNED')
                   {{ $flag = "" }}
                   <div class="alert alert-dismissible alert-danger">
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         <strong>Focus!</strong> <p>You cannot borrow this book because you have ongoing renatl on it!</p>
                   </div>
             @endif
+            @endauth
       @endforeach
             
       <div class="m-4 p-3" style="width: 20px; height: 20px"></div>
       <div class="container">
             <div class="row">
+            @auth
+            @if (Auth::user()->is_librarian)
+                  <div class="col">
+                        <form action="{{ route('books.edit', ['book' => $book->id]) }}" method="GET" class="d-inline">
+                              @csrf
+                              @method('GET')
+                              <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-lg btn-warning">Edit</button>
+                              </div>
+                        </form>
+                  </div>
+                  <div class="col">
+                        <form action="{{ route('books.destroy', ['book' => $book->id]) }}" method="POST" class="d-inline">
+                              @csrf
+                              @method('delete')
+                              <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-lg btn-danger">Delete</button>
+                              </div>
+                        </form>
+                  </div>
+              @endif
+              
               <div class="col">
-                  <form action="{{ route('books.edit', ['book' => $book->id]) }}" method="GET" class="d-inline">
-                        @csrf
-                        @method('GET')
-                        <div class="d-grid gap-2">
-                              <button type="submit" class="btn btn-lg btn-warning">Edit</button>
-                        </div>
-                  </form>
-              </div>
-              <div class="col">
-                  <form action="{{ route('books.destroy', ['book' => $book->id]) }}" method="POST" class="d-inline">
-                        @csrf
-                        @method('delete')
-                        <div class="d-grid gap-2">
-                              <button type="submit" class="btn btn-lg btn-danger">Delete</button>
-                        </div>
-                  </form>
-              </div>
-              <div class="col">
-                  
-                  <form action="{{ route('rentals.store', ['book' => $book->id]) }}" method="POST" class="d-inline">
+                    
+                    <form action="{{ route('rentals.store', ['book' => $book->id]) }}" method="POST" class="d-inline">
                         @csrf
                         <div class="d-grid gap-2">
                               <button type="submit" class="btn btn-lg btn-primary" @if(isset($flag) || isset($rented)) disabled @endif>Rent</button>
                         </div>
                   </form>
-              </div>
             </div>
+            @endauth
+      </div>
       </div>
 
 </div>

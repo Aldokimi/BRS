@@ -19,6 +19,6 @@ class BorrowSeeder extends Seeder
     public function run()
     {
         DB::table('borrows')->truncate();
-        Borrow::factory()->count(5)->create();
+        Borrow::factory()->count(16)->create();
     }
 }

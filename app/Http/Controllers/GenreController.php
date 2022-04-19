@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreGenreRequest;
 use App\Http\Requests\UpdateGenreRequest;
 use App\Models\Genre;
+use Illuminate\Support\Facades\Auth;
 
 class GenreController extends Controller
 {
@@ -15,9 +16,15 @@ class GenreController extends Controller
      */
     public function index()
     {
-        return view('genre.index', [
-            'genres' => Genre::all(),
-        ]);
+        $this->middleware('auth');
+        // $this->authorize('accessForLibraran');
+        if(Auth::user()->is_librarian){
+            return view('genre.index', [
+                'genres' => Genre::all(),
+            ]);
+        }else{
+            throw AuthenticationException::class;
+        }
     }
 
     /**
@@ -27,9 +34,17 @@ class GenreController extends Controller
      */
     public function create()
     {
-        return view('genre.create', [
-            'styles'=> ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'],
-        ]);
+        $this->middleware('auth');
+        //$this->authorize('accessForLibraran');
+        
+        if(Auth::user()->is_librarian){
+            dd("Dd");
+            return view('genre.create', [
+                'styles'=> ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'],
+            ]);
+        }else{
+            throw AuthenticationException::class;
+        }
     }
 
     /**
@@ -40,11 +55,17 @@ class GenreController extends Controller
      */
     public function store(StoreGenreRequest $request)
     {
-        
+        $this->middleware('auth');
+        // $this->authorize('accessForLibraran');
         $validated_data = $request->validated();
         // dd($request);
-        Genre::create($validated_data);
-        return redirect()->route('genres.index');
+        
+        if(Auth::user()->is_librarian){
+            Genre::create($validated_data);
+            return redirect()->route('genres.index');
+        }else{
+            throw AuthenticationException::class;
+        }
     }
 
     /**
@@ -55,6 +76,7 @@ class GenreController extends Controller
      */
     public function show(Genre $genre)
     {
+        //$this->authorize('accessForLibraran');
         // list by genre
         return view('genre.show', ['genre' => $genre]);
     }
@@ -67,10 +89,17 @@ class GenreController extends Controller
      */
     public function edit(Genre $genre)
     {
-        return view('genre.edit', [
-            'genre' => $genre,
-            'styles'=> ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'],
-        ]);
+        $this->middleware('auth');
+        // $this->authorize('accessForLibraran');
+        
+        if(Auth::user()->is_librarian){
+            return view('genre.edit', [
+                'genre' => $genre,
+                'styles'=> ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'],
+            ]);
+        }else{
+            throw AuthenticationException::class;
+        }
     }
 
     /**
@@ -82,12 +111,19 @@ class GenreController extends Controller
      */
     public function update(UpdateGenreRequest $request, Genre $genre)
     {
-        $validated_data = $request->validated();
+        $this->middleware('auth');
+        // $this->authorize('accessForLibraran');
+        
+        if(Auth::user()->is_librarian){
+            $validated_data = $request->validated();
         // dd($genre);
-        $genre->update($validated_data);
-        return redirect()->route('genres.index', [
-            'genre' =>$genre,
-        ]);
+            $genre->update($validated_data);
+            return redirect()->route('genres.index', [
+                'genre' =>$genre,
+            ]);
+        }else{
+            throw AuthenticationException::class;
+        }
     }
 
     /**
@@ -98,8 +134,15 @@ class GenreController extends Controller
      */
     public function destroy(Genre $genre)
     {
+        $this->middleware('auth');
+        // $this->authorize('accessForLibraran');
         // dd($genre);
-        $genre->delete();
-        return redirect()->route('genres.index');
+        
+        if(Auth::user()->is_librarian){
+            $genre->delete();
+            return redirect()->route('genres.index');
+        }else{
+            throw AuthenticationException::class;
+        }
     }
 }

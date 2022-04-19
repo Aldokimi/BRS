@@ -10,12 +10,13 @@ class BorrowPolicy
 {
     use HandlesAuthorization;
 
-    // public function accessForLibraran(User $user, Borrow $borrow){
-    //     return $user->is_librarian;
-    // }
+    public function access(User $user,  Borrow $borrow)
+    {
+        return $borrow->user->id === $user->id;
+    }
 
-    public function access(User $user, Borrow $borrow){
-        return !$user->is_librarian && $borrow->user_id === $user->id;
+    public function accessForLibraran(User $user){
+        return $user->is_librarian;
     }
     
 }

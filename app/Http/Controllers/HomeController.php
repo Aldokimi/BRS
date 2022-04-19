@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Borrow;
 use App\Models\Genre;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -17,6 +18,16 @@ class HomeController extends Controller
     public function __construct()
     {
         //$this->middleware('auth');
+    }
+
+    private function getNumberOfActiveRentails(){
+        
+        $rentals = Borrow::all();
+        $rentals = $rentals->filter(function($rental, $key){
+            return $rental->status === 'ACCEPTED';
+        });
+        
+        return count($rentals);
     }
 
     /**
@@ -37,6 +48,7 @@ class HomeController extends Controller
         return view('home', [
             'numberOfUsers' => count(User::all()),
             'numberOfBooks' => count(Book::all()),
+            'numberOfActiveRentals' => $this->getNumberOfActiveRentails(),
             'genres' => Genre::all(),
         ]);
     }

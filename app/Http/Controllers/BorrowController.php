@@ -18,6 +18,7 @@ class BorrowController extends Controller
      */
     public function index()
     {
+        //$this->authorize('accessForLibraran');
         if(!Auth::user()->is_librarian){
             return view('rental.index',[
                 'rentals' => Borrow::all()->filter(function($borrow){
@@ -66,6 +67,8 @@ class BorrowController extends Controller
      */
     public function show(Borrow  $rental)
     {
+        if (!Auth::user()->is_librarian)
+            $this->authorize('access', $rental);
         return view('rental.show', [
             'rental' => $rental,
             'users'  => User::all(),

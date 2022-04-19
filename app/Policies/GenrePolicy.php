@@ -13,9 +13,5 @@ class GenrePolicy
     public function accessForLibraran(User $user){
         return $user->is_librarian;
     }
-
-    public function accessForReader(User $user){
-        return !$user->is_librarian;
-    }
     
 }

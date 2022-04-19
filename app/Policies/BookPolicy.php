@@ -14,8 +14,4 @@ class BookPolicy
         return $user->is_librarian;
     }
 
-    public function accessForReader(User $user){
-        return !$user->is_librarian;
-    }
-
 }

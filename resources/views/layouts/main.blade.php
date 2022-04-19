@@ -38,6 +38,9 @@
                 <a class="nav-link" href="{{ route('books.index') }}">Books</a>
               </li>
               @auth
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ route('profile') }}">Profile</a>
+                  </li>
                   @if (!Auth::user()->is_librarian)
                     <li class="nav-item">
                       <a class="nav-link" href="{{ route('rentals.index') }}">My Rentals</a>

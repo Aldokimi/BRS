@@ -38,17 +38,33 @@
                   @if($rental->status == 'PENDING')
                     <ul class="list-group list-group-flush">{{-- if bending --}}
                       Requested at:
-                      <li class="list-group-item">{{ $rental->request_processed_at }}</li><br>
+                      @if($rental->request_processed_at != null)
+                        <li class="list-group-item">{{ $rental->request_processed_at }}</li><br>
+                      @else
+                        <li class="list-group-item">Not Decided Yet!</li><br>
+                      @endif
                       Request Managed by: 
-                      <li class="list-group-item">{{ $users->find($rental->request_managed_by)->name }}</li>
+                      @if($rental->return_managed_by != null)
+                        <li class="list-group-item">{{ $users->find($rental->return_managed_by)->name }}</li>
+                        @else
+                          <li class="list-group-item">Not Decided Yet!</li><br>
+                      @endif
                     </ul>
                   @endif
                   @if($rental->status == 'RETURNED')
                     <ul class="list-group list-group-flush">{{-- if returned --}}
                       Returned at:
-                      <li class="list-group-item">{{ $rental->returned_at }}</li><br>
+                      @if($rental->returned_at != null)
+                        <li class="list-group-item">{{ $rental->returned_at }}</li><br>
+                        @else
+                          <li class="list-group-item">Not Decided Yet!</li><br>
+                      @endif
                       Return Managed by: 
-                      <li class="list-group-item">{{ $users->find($rental->return_managed_by)->name }}</li>
+                      @if($rental->return_managed_by != null)
+                        <li class="list-group-item">{{ $users->find($rental->return_managed_by)->name }}</li>
+                        @else
+                          <li class="list-group-item">Not Decided Yet!</li><br>
+                      @endif
                     </ul>
                   @endif
                 </div>
@@ -56,7 +72,8 @@
           </div>
           <div class="col">
 
-
+            @auth
+            @if (Auth::user()->is_librarian)
             <div class="card border-success mb-3" style="max-width: 20rem;">
               <div class="card-header">Settings</div>
               <div class="card-body">
@@ -109,6 +126,9 @@
                 </div>
               </div>
             </div>
+            @endif
+            @endauth
+
           </div>
         </div>
       </div>

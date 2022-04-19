@@ -5,8 +5,8 @@
     
     <div class="container">
         <div class="row">
-          <div class="col">
-            <div class="card" style="width: 18rem;">
+          <div class="col-6 p-2">
+            <div class="card " style="width: 18rem;">
                 <img class="card-img-top" src="https://s1.zerochan.net/Yuzuki.Yukari.600.3621347.jpg" alt="Card image cap">
                 <div class="card-body">
                   <p class="card-text">Number of Users</p><br>
@@ -14,7 +14,7 @@
                 </div>
             </div>
           </div>
-          <div class="col">
+          <div class="col-6 p-2">
             <div class="card" style="width: 18rem;">
                 <img class="card-img-top" src="https://s1.zerochan.net/Yuzuki.Yukari.600.3621347.jpg" alt="Card image cap">
                 <div class="card-body">
@@ -23,12 +23,21 @@
                 </div>
             </div>
           </div>
-          <div class="col">
+          <div class="col-6 p-2">
             <div class="card" style="width: 18rem;">
                 <img class="card-img-top" src="https://s1.zerochan.net/Yuzuki.Yukari.600.3621347.jpg" alt="Card image cap">
                 <div class="card-body">
                   <p class="card-text">Number of Books</p><br>
                   <strong class="text-danger fs-1"> {{ $numberOfBooks }} </strong>
+                </div>
+            </div>
+          </div>
+          <div class="col-6 p-2">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="https://s1.zerochan.net/Yuzuki.Yukari.600.3621347.jpg" alt="Card image cap">
+                <div class="card-body">
+                  <p class="card-text">Number of Active Rentals</p><br>
+                  <strong class="text-danger fs-1"> {{ $numberOfActiveRentals }} </strong>
                 </div>
             </div>
           </div>

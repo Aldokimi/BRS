@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
+use App\Models\Borrow;
 use App\Models\Genre;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
@@ -33,9 +35,16 @@ class BookController extends Controller
      */
     public function create()
     {
-        return view('book.create',[
-            'genres' => Genre::all(),
-        ]);
+        $this->middleware('auth');
+        //$this->authorize('accessForLibraran');
+        
+        if(Auth::user()->is_librarian){
+            return view('book.create',[
+                'genres' => Genre::all(),
+            ]);
+        }else{
+            throw AuthenticationException::class;
+        }
     }
 
     /**
@@ -46,13 +55,20 @@ class BookController extends Controller
      */
     public function store(StoreBookRequest $request)
     {
-        dd($request);
-        $validated_data = $request->validated();
-        $book = Book::create($validated_data);
-        if (isset($validated_data['genres'])) {
-            $book->genres()->attach($validated_data['genres']);
+        $this->middleware('auth');
+        //$this->authorize('accessForLibraran');
+        //dd($request);
+        if(Auth::user()->is_librarian){
+            $validated_data = $request->validated();
+            $book = Book::create($validated_data);
+            if (isset($validated_data['genres'])) {
+                $book->genres()->attach($validated_data['genres']);
+            }
+            return redirect()->route('home');
+        }else{
+            throw AuthenticationException::class;
         }
-        return redirect()->route('home');
+        
     }
 
     /**
@@ -63,9 +79,22 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
+        $books = Book::all();
+        $books = $books->filter(function($book){
+            return !$this->containsBook($book->id);
+        });
+        // dd(count($books));
         return view('book.show', [
             'book' => $book,
+            'unRentedBooks' => count($books),
         ]);
+    }
+
+    private function containsBook($id){
+        return Borrow::all()->contains(function ($value, $key) use($id){
+            return $value->book_id == $id;
+        });
+
     }
 
     /**
@@ -76,10 +105,17 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        return view('book.edit', [
-            'book' => $book,
-            'genres' => Genre::all(),
-        ]);
+        $this->middleware('auth');
+        // $this->authorize('accessForLibraran');
+        
+        if(Auth::user()->is_librarian){
+            return view('book.edit', [
+                'book' => $book,
+                'genres' => Genre::all(),
+            ]);
+        }else{
+            throw AuthenticationException::class;
+        }
     }
 
     /**
@@ -91,13 +127,20 @@ class BookController extends Controller
      */
     public function update(UpdateBookRequest $request, Book $book)
     {
-        $validated_data = $request->validated();
-        $book->update($validated_data);
-        $book->genres()->sync($request['genres'] ?? []);
-        // dd($book->genres);
-        return redirect()->route('books.show', [
-            'book' => $book,
-        ]);
+        $this->middleware('auth');
+        //$this->authorize('accessForLibraran');
+        
+        if(Auth::user()->is_librarian){
+            $validated_data = $request->validated();
+            $book->update($validated_data);
+            $book->genres()->sync($request['genres'] ?? []);
+            // dd($book->genres);
+            return redirect()->route('books.show', [
+                'book' => $book,
+            ]);
+        }else{
+            throw AuthenticationException::class;
+        }
     }
 
     /**
@@ -108,9 +151,15 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
+        $this->middleware('auth');
         // dd($book);
-        $book->delete();
-        return redirect()->route('home');
+        // $this->authorize('accessForLibraran');
+        if(Auth::user()->is_librarian){
+            $book->delete();
+            return redirect()->route('home');
+        }else{
+            throw AuthenticationException::class;
+        }
     }
 
 }

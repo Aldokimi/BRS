@@ -19,10 +19,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
+Route::resource('genres', GenreController::class);
+Route::resource('books', BookController::class);
 Route::middleware(['auth'])->group(function() {
     Route::resource('rentals', BorrowController::class);
-    Route::resource('books', BookController::class);
-    Route::resource('genres', GenreController::class);
     Route::get('logout', function (Request $request) {
         Auth::logout();
  
@@ -32,6 +34,11 @@ Route::middleware(['auth'])->group(function() {
      
         return redirect('/');
     })->name('logout');
+    Route::get('profile', function () {
+        return view('user.profile', [
+            'user' => Auth::user(),
+        ]);
+    })->name('profile');
 });
 
 
